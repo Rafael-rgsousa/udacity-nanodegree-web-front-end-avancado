@@ -1,0 +1,11 @@
+body {
+    text-align: center;
+}
+
+.fixed-size {
+    width: 100px;
+}
+
+.background{
+    background-image: url("/images/background.png");
+}
