@@ -19,6 +19,10 @@ The Time Left marca o tempo restante. Se você chegar até a água você ganha, 
 
 Boa sorte!
 
+Origem dos audios: https://freesound.org/
+
+
+
 How to start
 
 Please deploy the project on any web server and then browse to the root of the project. This procedure should automatically load the index.html file.
@@ -38,3 +42,6 @@ The Life marks the amount of chances you have. If you reach the water you get bu
 The Team Left marks the time remaining. If you get to the water you win, if you lose is reached. If the value is zero, you lose regardless of the number of lives left.
 
 Good luck! (by Microsoft Translator)
+
+
+Audio origins: https://freesound.org/

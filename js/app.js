@@ -1,15 +1,24 @@
-class Enemy{
+class Base{
+    constructor(avatar){
+        this.avatar = avatar
+    }
+
+}
+
+class Enemy extends Base{
 
     constructor(name){
+
+        super("")
+        this.avatar = this.randomizeAvatar();
         this.name = name;
-        this.sprite = this.randomizeSprite();
         this.x = -10 - this.randomInterval(0, 250);
         this.y = 60 + (85 * this.randomInterval(0,2));
-        this.bottomSpeed = 400;
-        this.topSpeed = 500;
-        this.speed = this.randomInterval(this.topSpeed, this.bottomSpeed);
-        this.hitPlayerRecently = false;
-        this.hitTimeout =0;
+        this.minimalSpeed = 400;
+        this.maximumSpeed = 500;
+        this.speed = this.randomInterval(this.minimalSpeed, this.maximumSpeed);
+        this.hit = false;
+        this.hitTime = 0;
     }
 
     /**
@@ -17,7 +26,7 @@ class Enemy{
      * @constructor
      * @param none
      */
-    randomizeSprite(){
+    randomizeAvatar(){
 
         let min = Math.ceil(0);
         let max = Math.floor(3);
@@ -54,7 +63,7 @@ class Enemy{
             this.x = -10 - this.randomInterval(0, 250);
             this.y = 60 + (85 * this.randomInterval(0, 2));
 
-            this.speed = this.randomInterval(this.topSpeed, this.bottomSpeed);
+            this.speed = this.randomInterval(this.maximumSpeed, this.minimalSpeed);
         }
 
     }
@@ -66,16 +75,16 @@ class Enemy{
      */
     render(ctx){
 
-        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-        if (this.hitPlayerRecently) {
+        ctx.drawImage(Resources.get(this.avatar), this.x, this.y);
+        if (this.hit) {
             this.playCollisonAudio();
-            if (this.hitTimeout < 30) {
+            if (this.hitTime < 30) {
 
-                this.hitTimeout += 1;
+                this.hitTime += 1;
 
             } else {
-                this.hitPlayerRecently = false;
-                this.hitTimeout = 0;
+                this.hit = false;
+                this.hitTime = 0;
             }
         }
     }
@@ -102,22 +111,16 @@ class Enemy{
 }
 
 
-function createNovoPlayer(param1, param2){
-    return new Player(param1, param2);
-}
 
-
-
-
-class Player {
+class Player extends Base{
 
     constructor(selectedAvatar, difficulty){
-        this.sprite = selectedAvatar;
+        super(selectedAvatar)
         this.col = 0;
-        this.row =5;
-        this.crossings =0;
-        this.lifes =3;
-        this.stage =1;
+        this.row = 5;
+        this.conclusion = 0;
+        this.lifes = 3;
+        this.stage = 1;
         this.expertise = difficulty;
         this.dead = false;
         this.time = 60;
@@ -177,7 +180,7 @@ class Player {
     updatePlayerConditions(){
 
         this.stage++;
-        this.crossings+= 10;
+        this.conclusion+= 10;
         this.row = 5;
 
         if(this.stage ==1){
@@ -217,7 +220,7 @@ class Player {
 
         }
 
-        if(this.lifes == 0){
+        if(this.lifes <= 0){
             this.dead = true;
             this.gameOver();
         }
@@ -252,26 +255,26 @@ class Player {
      * @param allEnemies
      */
     update(allEnemies){
-        allEnemies.forEach(this.checkForCollision, this);
+        allEnemies.forEach(this.checkCollision, this);
     }
 
 
     /**
      * @description verify if has collision
      * @constructor
-     * @param element, position
+     * @param element
      */
-    checkForCollision(element) {
-        var playerX = this.x();//one execution
-        var playerY = this.y();//one execution
+    checkCollision(element) {
+        let playerX = this.x();//one execution
+        let playerY = this.y();//one execution
         if (element.x >= playerX - 10 && element.x <= playerX + 10) {
             if (element.y >= playerY - 10 && element.y <= playerY + 10) {
                 this.row = 5;
-                element.hitPlayerRecently = true;
-                if(this.crossings>0){
-                    this.crossings--;
+                element.hit = true;
+                if(this.conclusion>0){
+                    this.conclusion--;
                 }else{
-                    this.crossings = 0 ;
+                    this.conclusion = 0 ;
                 }
 
                 this.updatePlayerCollisionConditions();
@@ -287,11 +290,11 @@ class Player {
      */
     render(ctx ){
         this.chekTime();
-        ctx.drawImage(Resources.get(this.sprite), this.x(), this.y());
+        ctx.drawImage(Resources.get(this.avatar), this.x(), this.y());
         ctx.font = '20pt impact';
         ctx.fillStyle = 'white';
-        ctx.fillText(`Stage:  ${this.stage} Score: ${this.crossings}  Lifes: ${this.lifes} Time Left: ${this.time}`, 10, 100);
-        this.score = this.crossings;
+        ctx.fillText(`Stage:  ${this.stage} Score: ${this.conclusion}  Lifes: ${this.lifes} Time Left: ${this.time}`, 10, 100);
+        this.score = this.conclusion;
     }
 
 

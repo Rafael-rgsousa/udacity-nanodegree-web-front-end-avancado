@@ -68,7 +68,7 @@ function initGame() {
         return false;
     }
 
-    const player = createNovoPlayer(selectedAvatar, difficulty);
+    const player = new Player(selectedAvatar, difficulty);
     const allEnemies = [
         new Enemy("Joao"),
         new Enemy("Carlos"),
